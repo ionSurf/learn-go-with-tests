@@ -6,38 +6,86 @@ import (
 )
 
 func TestPerimeter(t *testing.T) {
-	checkPerimeter := func(t *testing.T, shape Shape, expected float64) {
-		got := shape.Perimeter()
-		AssertGeometryFunctions(t, expected, got)
+
+	perimeterTests := []struct {
+		name     string
+		shape    Shape
+		expected float64
+	}{
+		{
+			name: "Rectangle",
+			shape: Rectangle{
+				Width:  10.0,
+				Height: 10.0,
+			},
+			expected: 40.0,
+		},
+		{
+			name: "Circle",
+			shape: Circle{
+				Radius: 10.0,
+			},
+			expected: math.Pi * 10.0 * 2,
+		},
+		{
+			name: "Triangle",
+			shape: Triangle{
+				Base:   12,
+				Height: 6,
+			},
+			expected: 0,
+		},
 	}
-	t.Run("Get perimeter from rectangle", func(t *testing.T) {
-		rectangle := Rectangle{10.0, 10.0}
-		checkPerimeter(t, rectangle, 40.0)
-	})
-	t.Run("Get perimeter from circle", func(t *testing.T) {
-		circle := Circle{10.0}
-		checkPerimeter(t, circle, math.Pi*2*10.0)
-	})
+
+	for _, tt := range perimeterTests {
+		t.Run(tt.name, func(t *testing.T) {
+			AssertGeometryFunctions(t, tt.shape, tt.expected, tt.shape.Perimeter())
+		})
+	}
 }
 
 func TestArea(t *testing.T) {
-	checkArea := func(t *testing.T, shape Shape, expected float64) {
-		got := shape.Area()
-		AssertGeometryFunctions(t, expected, got)
+
+	areaTests := []struct {
+		name     string
+		shape    Shape
+		expected float64
+	}{
+		{
+			name: "Rectangle",
+			shape: Rectangle{
+				Width:  12,
+				Height: 6,
+			},
+			expected: 72.0,
+		},
+		{
+			name: "Circle",
+			shape: Circle{
+				Radius: 10.0,
+			},
+			expected: math.Pi * 10.0 * 10.0,
+		},
+		{
+			name: "Triangle",
+			shape: Triangle{
+				Base:   12,
+				Height: 6,
+			},
+			expected: 36.0,
+		},
 	}
-	t.Run("Get area from rectangle", func(t *testing.T) {
-		rectangle := Rectangle{10.0, 10.0}
-		checkArea(t, rectangle, 100.0)
-	})
-	t.Run("Get area from circle", func(t *testing.T) {
-		circle := Circle{10.0}
-		checkArea(t, circle, math.Pi*10.0*10.0)
-	})
+
+	for _, tt := range areaTests {
+		t.Run(tt.name, func(t *testing.T) {
+			AssertGeometryFunctions(t, tt.shape, tt.expected, tt.shape.Area())
+		})
+	}
 }
 
-func AssertGeometryFunctions(t testing.TB, expected, got float64) {
+func AssertGeometryFunctions(t testing.TB, shape Shape, expected, got float64) {
 	t.Helper()
 	if got != expected {
-		t.Errorf("Expected %.2f, got %.2f", expected, got)
+		t.Errorf("%v, expected %.2f, got %.2f", shape, expected, got)
 	}
 }
