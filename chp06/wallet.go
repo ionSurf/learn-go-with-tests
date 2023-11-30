@@ -1,6 +1,11 @@
 package wallet
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+)
+
+var ErrInsufficientFunds = errors.New("widthrawl amount is higher than the wallet's balance")
 
 type Stringer interface {
 	String() string
@@ -24,6 +29,10 @@ func (w *Wallet) Deposit(amount Bitcoin) {
 	w.balance += amount
 }
 
-func (w *Wallet) Widthraw(amount Bitcoin) {
+func (w *Wallet) Widthraw(amount Bitcoin) error {
+	if amount > w.balance {
+		return ErrInsufficientFunds
+	}
 	w.balance -= amount
+	return nil
 }
